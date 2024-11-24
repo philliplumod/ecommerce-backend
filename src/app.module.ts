@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AllExceptionsFilter } from './common/serializers/httpExceptionFilter';
 import { logger } from './common/middleware/logger.middleware';
+import { UsersModule } from './models/users/users.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { logger } from './common/middleware/logger.middleware';
       },
       inject: [ConfigService],
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [

@@ -9,7 +9,7 @@ export enum userRole {
 @Schema({
   timestamps: true,
 })
-export class User extends Document {
+export class Users extends Document {
   @Prop({ required: true })
   name: string;
 
@@ -32,4 +32,4 @@ export class User extends Document {
   otpExpiryTime: Date;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(Users);
