@@ -26,6 +26,7 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^10.1.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/swagger": "^8.0.7",
     "@types/mongoose": "^5.11.96",
     "class-validator": "^0.14.1",
     "config": "^3.3.12",
