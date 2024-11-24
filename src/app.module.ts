@@ -3,8 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AllExceptionsFilter } from './httpExceptionFilter';
-import { logger } from './middleware/logger.middleware';
+import { AllExceptionsFilter } from './common/serializers/httpExceptionFilter';
+import { logger } from './common/middleware/logger.middleware';
 
 @Module({
   imports: [
