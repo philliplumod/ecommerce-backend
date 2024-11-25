@@ -6,11 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
+  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+
 @ApiTags('user')
 @Controller('users')
 export class UsersController {
@@ -19,6 +24,21 @@ export class UsersController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+
+  @Post('/login')
+  @HttpCode(HttpStatus.OK)
+  async login(
+    @Body() loginUser: { email: string; password: string },
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const loginRes =  await this.usersService.login(loginUser.email, loginUser.password,);
+
+    if (loginRes.success){
+      response.cookie('jwt', loginRes.result?.token, { httpOnly: true });
+    }
+    delete loginRes.result?.token;
+    return loginRes;
   }
 
   @Get()
