@@ -9,6 +9,7 @@ import { hash } from 'crypto';
 import { userRole } from './schema/user.schema';
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from './user.repository';
+import { sendEmail } from 'src/common/utility/mail-handler';
 
 const configService = new ConfigService();
 
