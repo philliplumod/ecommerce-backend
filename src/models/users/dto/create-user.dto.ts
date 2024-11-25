@@ -1,4 +1,10 @@
-import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { userRole } from '../schema/user.schema';
 
 export class CreateUserDto {
@@ -22,4 +28,7 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   secretToken?: string;
+
+  @IsBoolean()
+  isVerified?: boolean;
 }
