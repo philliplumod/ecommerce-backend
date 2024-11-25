@@ -1,12 +1,25 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { hash } from 'crypto';
+import { userRole } from './schema/user.schema';
+import { ConfigService } from '@nestjs/config';
+
+const configService = new ConfigService();
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     try {
-      return 'This action adds a new user';
+      const hashedPassword = await hash(createUserDto.password, 'sha256');
+
+      if (
+        createUserDto.role === userRole.ADMIN &&
+        createUserDto.secretToken ===
+          configService.get<string>('ADMIN_SECRET_TOKEN')
+      ) {
+        return 'User created successfully';
+      }
     } catch (error) {
       throw new InternalServerErrorException('Error while creating user');
     }
