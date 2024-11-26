@@ -10,6 +10,7 @@ import { userRole } from './schema/user.schema';
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from './user.repository';
 import { sendEmail } from 'src/common/utility/mail-handler';
+import { generateAuthToken } from 'src/common/utility/token-generator';
 
 const configService = new ConfigService();
 
@@ -54,12 +55,24 @@ export class UsersService {
       });
 
       if (newUser.role !== userRole.ADMIN) {
-        sendEmail(newUser.email, otp);
+        await sendEmail(
+          newUser.email,
+          configService.get<string>('VERIFY_EMAIL_TEMPLATE'),
+          'Verify Email',
+          {
+            customerName: newUser.name,
+            customerEmail: newUser.email,
+            otp,
+          },
+        );
       }
 
       return {
         success: true,
-        message: 'User created successfully',
+        message:
+          newUser.role === userRole.ADMIN
+            ? 'Admin created'
+            : 'Please activate your account by verifying your email. OTP sent to your email',
         result: { email: newUser.email },
       };
     } catch (error) {
@@ -67,8 +80,35 @@ export class UsersService {
     }
   }
 
-  login(email: string, password: string) {
-    return 'This action logs in a user';
+  async login(email: string, password: string) {
+    try {
+      const userExists = await this.userMongoDB.findOne({
+        email,
+      });
+      if (!userExists) {
+        throw new Error('User not found');
+      }
+      if (!userExists.isVerified) {
+        throw new Error('Please verify your account');
+      }
+      const isPasswordMatched = userExists.password === password;
+      if (!isPasswordMatched) {
+        throw new Error('Incorrect password');
+      }
+      const token = await generateAuthToken(userExists.id);
+      return {
+        success: true,
+        message: 'Login successful',
+        result: {
+          user: {
+            name: userExists.name,
+            email: userExists.email,
+            role: userExists.role,
+          },
+          token,
+        },
+      };
+    } catch (error) {}
   }
 
   findAll() {

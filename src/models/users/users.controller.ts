@@ -32,9 +32,12 @@ export class UsersController {
     @Body() loginUser: { email: string; password: string },
     @Res({ passthrough: true }) response: Response,
   ) {
-    const loginRes =  await this.usersService.login(loginUser.email, loginUser.password,);
+    const loginRes = await this.usersService.login(
+      loginUser.email,
+      loginUser.password,
+    );
 
-    if (loginRes.success){
+    if (loginRes.success) {
       response.cookie('jwt', loginRes.result?.token, { httpOnly: true });
     }
     delete loginRes.result?.token;
