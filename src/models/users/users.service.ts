@@ -40,7 +40,7 @@ export class UsersService {
       if (user) {
         throw new Error('User already exists');
       }
-
+//https://youtu.be/wwktn2EafpM
       const otp = Math.floor(100000 + Math.random() * 900000);
       const otpExpiryTime = new Date();
       otpExpiryTime.setMinutes(otpExpiryTime.getMinutes() + 5);
