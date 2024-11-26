@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { hash } from 'crypto';
+import { compare, hash } from 'bcrypt';
 import { userRole } from './schema/user.schema';
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from './user.repository';
@@ -22,8 +22,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
-      // generate hashed password
-      const hashedPassword = await hash(createUserDto.password, 'sha256');
+      const hashedPassword = await hash(createUserDto.password, 10);
 
       if (
         createUserDto.role === userRole.ADMIN &&
@@ -35,7 +34,6 @@ export class UsersService {
         createUserDto.isVerified = true;
       }
 
-      // check if user already exists
       const user = await this.userMongoDB.findOne({
         email: createUserDto.email,
       });
